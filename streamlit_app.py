@@ -24,14 +24,17 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     c.drawString(30, height - 100, f"📱 Phone: {phone}")
 
     # Profile Picture (if uploaded), with a circular border
+    img_height = 120  # Set height for profile picture
+    img_width = 120   # Set width for profile picture
+
     if image_path:
         img = Image.open(image_path)
-        img = img.resize((120, 120))  # Ensure the image fits the size
+        img = img.resize((img_width, img_height))  # Ensure the image fits the size
         img.save("temp_img.png")
         c.setStrokeColor(colors.gray)
         c.setLineWidth(1)
         c.circle(width - 150, height - 180, 60)  # Draw a circle around the image
-        c.drawImage("temp_img.png", width - 180, height - 200, width=120, height=120)
+        c.drawImage("temp_img.png", width - 180, height - 200, width=img_width, height=img_height)
 
     # Draw a line after contact info
     c.setStrokeColor(colors.darkblue)
