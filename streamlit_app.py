@@ -23,7 +23,7 @@ def generate_pdf(name, profession, contact_info, skills, experience):
     p.setFont("Helvetica", 12)
     y = height - 150
     for skill in skills:
-        p.drawString(50, y, f"- {skill}")
+        p.drawString(50, y, f"- {skill.strip()}")
         y -= 15
 
     # Experience
@@ -32,7 +32,7 @@ def generate_pdf(name, profession, contact_info, skills, experience):
     p.setFont("Helvetica", 12)
     y -= 20
     for exp in experience:
-        p.drawString(50, y, exp)
+        p.drawString(50, y, exp.strip())
         y -= 15
 
     p.showPage()
@@ -55,12 +55,15 @@ with st.form("resume_form"):
     submitted = st.form_submit_button("Generate PDF")
 
     if submitted:
-        pdf_buffer = generate_pdf(name, profession, contact_info, skills, experience)
-        
-        # PDF download link
-        st.download_button(
-            "Download PDF",
-            pdf_buffer,
-            file_name="resume.pdf",
-            mime="application/pdf"
-        )
+        if name and profession:  # Check if required fields are not empty
+            pdf_buffer = generate_pdf(name, profession, contact_info, skills, experience)
+            
+            # PDF download link
+            st.download_button(
+                label="Download PDF",
+                data=pdf_buffer,
+                file_name="resume.pdf",
+                mime="application/pdf"
+            )
+        else:
+            st.error("Please fill in all required fields.")
