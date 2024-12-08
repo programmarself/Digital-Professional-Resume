@@ -44,7 +44,7 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     c.drawString(30, height - 160, "👤 Biography:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    text = c.beginText(30, height - 100)
+    text = c.beginText(80, height - 180)
     text.setFont("Helvetica", 12)
     for line in bio.split('\n'):
         text.textLine(line)
