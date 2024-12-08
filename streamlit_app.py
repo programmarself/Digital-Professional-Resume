@@ -17,7 +17,7 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
 
     # Title of the Resume with emoji
     c.setFont("Helvetica-Bold", 24)
-    c.setFillColor(colors.white)
+    c.setFillColor(colors.black)
     c.drawString(30, y_position, f"{name}'s Resume 🎉")
     y_position -= 40  # Move down after title
 
@@ -30,9 +30,9 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
         img = img.resize((img_width, img_height))  # Ensure the image fits the size
         img.save("temp_img.png")
         # Position the image on the top-right corner
-        c.setStrokeColor(colors.gray)
+        c.setStrokeColor(colors.white)
         c.setLineWidth(1)
-        c.circle(width - 60, height - 60, 60)  # Draw a circle around the image
+        #c.circle(width - 60, height - 60, 60)  # Draw a circle around the image
         c.drawImage("temp_img.png", width - 140, height - 160, width=img_width, height=img_height)
         y_position -= 140  # Move down after profile picture to avoid overlap
     else:
