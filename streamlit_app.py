@@ -4,6 +4,7 @@ from reportlab.pdfgen import canvas
 import io
 
 def generate_pdf(name, profession, contact_info, skills, experience):
+    # Create a buffer to hold the generated PDF
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
@@ -38,7 +39,8 @@ def generate_pdf(name, profession, contact_info, skills, experience):
     p.showPage()
     p.save()
     
-    buffer.seek(0)  # Important: reset the buffer's position to the beginning
+    # Rewind buffer to the beginning so that it can be read from the start
+    buffer.seek(0)
     return buffer
 
 # Streamlit app
@@ -57,14 +59,15 @@ with st.form("resume_form"):
     
     if submitted:
         if name and profession:  # Ensure required fields are filled
+            # Generate the PDF buffer
             pdf_buffer = generate_pdf(name, profession, contact_info, skills, experience)
             
-            # Use a separate button for downloading the PDF
+            # Provide the download button
             st.download_button(
                 label="Download PDF",
-                data=pdf_buffer.getvalue(),  # Use .getvalue() to get the byte content of the buffer
-                file_name="resume.pdf",
-                mime="application/pdf"
+                data=pdf_buffer.getvalue(),  # Extract binary data from the buffer
+                file_name="resume.pdf",  # Define the file name
+                mime="application/pdf"  # Set MIME type for the download
             )
         else:
             st.error("Please fill in all required fields.")
