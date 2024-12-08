@@ -12,16 +12,22 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
 
+    # Define initial Y position for text to start (based on the title size)
+    y_position = height - 50
+
     # Title of the Resume with emoji
     c.setFont("Helvetica-Bold", 24)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 50, f"{name}'s Resume 🎉")
+    c.drawString(30, y_position, f"{name}'s Resume 🎉")
+    y_position -= 40  # Move down after title
 
     # Contact Info with emojis
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    c.drawString(30, height - 80, f"📧 Email: {email}")
-    c.drawString(30, height - 100, f"📱 Phone: {phone}")
+    c.drawString(30, y_position, f"📧 Email: {email}")
+    y_position -= 20
+    c.drawString(30, y_position, f"📱 Phone: {phone}")
+    y_position -= 40  # Add space after contact info
 
     # Profile Picture (if uploaded), with a circular border
     img_height = 120  # Set height for profile picture
@@ -33,94 +39,115 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
         img.save("temp_img.png")
         c.setStrokeColor(colors.gray)
         c.setLineWidth(1)
-        c.circle(width - 150, height - 180, 60)  # Draw a circle around the image
-        c.drawImage("temp_img.png", width - 180, height - 200, width=img_width, height=img_height)
+        c.circle(width - 150, y_position - 60, 60)  # Draw a circle around the image
+        c.drawImage("temp_img.png", width - 180, y_position - 80, width=img_width, height=img_height)
+        y_position -= 140  # Move down after profile picture to avoid overlap
 
     # Draw a line after contact info
     c.setStrokeColor(colors.darkblue)
     c.setLineWidth(1)
-    c.line(30, height - 120, width - 30, height - 120)
+    c.line(30, y_position, width - 30, y_position)
+    y_position -= 20  # Move down after line
 
     # Biography Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 160, "👤 Biography:")
+    c.drawString(30, y_position, "👤 Biography:")
+    y_position -= 20
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    text = c.beginText(30, height - 180)
+    text = c.beginText(30, y_position)
     text.setFont("Helvetica", 12)
     for line in bio.split('\n'):
         text.textLine(line)
+        y_position -= 14  # Adjust line height dynamically
     c.drawText(text)
+    y_position -= 20  # Add space after biography section
 
     # Skills Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 250, "💼 Skills:")
+    c.drawString(30, y_position, "💼 Skills:")
+    y_position -= 20
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     skill_list = skills.split(", ")
     for i, skill in enumerate(skill_list):
-        c.drawString(30, height - 270 - i * 20, f"- {skill}")
+        c.drawString(30, y_position, f"- {skill}")
+        y_position -= 20  # Move down after each skill
+    y_position -= 20  # Add space after skills section
 
     # Education Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 350, "🎓 Education:")
+    c.drawString(30, y_position, "🎓 Education:")
+    y_position -= 20
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    text = c.beginText(30, height - 370)
+    text = c.beginText(30, y_position)
     text.setFont("Helvetica", 12)
     for line in education.split('\n'):
         text.textLine(line)
+        y_position -= 14  # Adjust line height dynamically
     c.drawText(text)
+    y_position -= 20  # Add space after education section
 
     # Work Experience Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 450, "💼 Work Experience:")
+    c.drawString(30, y_position, "💼 Work Experience:")
+    y_position -= 20
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    text = c.beginText(30, height - 470)
+    text = c.beginText(30, y_position)
     text.setFont("Helvetica", 12)
     for line in work_experience.split('\n'):
         text.textLine(line)
+        y_position -= 14  # Adjust line height dynamically
     c.drawText(text)
+    y_position -= 20  # Add space after work experience section
 
     # Projects Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 550, "📂 Projects:")
+    c.drawString(30, y_position, "📂 Projects:")
+    y_position -= 20
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    text = c.beginText(30, height - 570)
+    text = c.beginText(30, y_position)
     text.setFont("Helvetica", 12)
     for line in projects.split('\n'):
         text.textLine(line)
+        y_position -= 14  # Adjust line height dynamically
     c.drawText(text)
+    y_position -= 20  # Add space after projects section
 
     # Certifications Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 650, "🏅 Certifications:")
+    c.drawString(30, y_position, "🏅 Certifications:")
+    y_position -= 20
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    text = c.beginText(30, height - 670)
+    text = c.beginText(30, y_position)
     text.setFont("Helvetica", 12)
     for line in certifications.split('\n'):
         text.textLine(line)
+        y_position -= 14  # Adjust line height dynamically
     c.drawText(text)
+    y_position -= 20  # Add space after certifications section
 
     # Draw a line before the footer
     c.setStrokeColor(colors.darkblue)
     c.setLineWidth(1)
-    c.line(30, height - 690, width - 30, height - 690)
+    c.line(30, y_position, width - 30, y_position)
+    y_position -= 20  # Move down after line
 
     # Footer (Social Media, LinkedIn, etc.)
     c.setFont("Helvetica-Oblique", 10)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, 30, f"🔗 LinkedIn: www.linkedin.com/in/{name.lower().replace(' ', '')}")
-    c.drawString(width - 250, 30, f"🐱 GitHub: github.com/{name.lower().replace(' ', '')}")
+    c.drawString(30, y_position, f"🔗 LinkedIn: www.linkedin.com/in/{name.lower().replace(' ', '')}")
+    c.drawString(width - 250, y_position, f"🐱 GitHub: github.com/{name.lower().replace(' ', '')}")
 
     # Save the PDF
     c.showPage()
