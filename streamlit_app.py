@@ -6,7 +6,7 @@ import io
 from reportlab.lib import colors
 
 # Function to generate a more professional and creative PDF with emojis and better design
-def generate_pdf(name, email, phone, bio, skills, education, work_experience, projects, certifications, image_path):
+def generate_pdf(name, email, phone, bio,  education , skills, work_experience, projects, certifications, image_path):
     # Create a PDF in memory
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
@@ -49,17 +49,7 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     for line in bio.split('\n'):
         text.textLine(line)
     c.drawText(text)
-
-    # Skills Section with an emoji
-    c.setFont("Helvetica-Bold", 14)
-    c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 250, "💼 Skills:")
-    c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    skill_list = skills.split(", ")
-    for i, skill in enumerate(skill_list):
-        c.drawString(30, height - 270 - i * 20, f"- {skill}")
-
+    
     # Education Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
@@ -71,6 +61,18 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     for line in education.split('\n'):
         text.textLine(line)
     c.drawText(text)
+    
+    # Skills Section with an emoji
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColor(colors.darkblue)
+    c.drawString(30, height - 250, "💼 Skills:")
+    c.setFont("Helvetica", 12)
+    c.setFillColor(colors.black)
+    skill_list = skills.split(", ")
+    for i, skill in enumerate(skill_list):
+        c.drawString(30, height - 270 - i * 20, f"- {skill}")
+
+  
 
     # Work Experience Section with an emoji
     c.setFont("Helvetica-Bold", 14)
