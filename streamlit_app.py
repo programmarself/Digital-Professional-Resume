@@ -1,95 +1,91 @@
 import streamlit as st
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    HRFlowable,
+)
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 from io import BytesIO
-import re
-import datetime
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab import pdfmetrics
 import streamlit_antd_components as sac
+import datetime, re
 
-# Helper Functions
+
 def format_date(date):
     return date.strftime("%b %Y")
+
 
 def generate_pdf(data):
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        leftMargin=0.75 * inch,
-        rightMargin=0.75 * inch,
-        topMargin=0.75 * inch,
-        bottomMargin=0.75 * inch,
+        leftMargin=0.5 * inch,
+        rightMargin=0.5 * inch,
+        topMargin=0.3 * inch,
+        bottomMargin=0.3 * inch,
     )
-
-    # Setting up styles
     styles = getSampleStyleSheet()
-    title_style = ParagraphStyle(
-        name="Title",
-        parent=styles["Heading1"],
-        alignment=TA_CENTER,
-        fontSize=24,
-        textColor=colors.black,
-        spaceAfter=10,
-    )
-
-    normal_style = ParagraphStyle(
-        name="Normal", parent=styles["Normal"], fontSize=11, spaceAfter=6
-    )
-
-    bold_style = ParagraphStyle(
-        name="Normal", parent=styles["Normal"], fontSize=12, spaceAfter=6, alignment=TA_CENTER
-    )
-
     story = []
 
-    # Title (Name)
+    # Title
     if data["name"]:
+        title_style = ParagraphStyle(
+            name="Title",
+            parent=styles["Heading1"],
+            alignment=TA_CENTER,
+            fontSize=24,
+            spaceAfter=6,
+        )
         story.append(Paragraph(f"{data['name']}".upper(), title_style))
 
     story.append(Spacer(1, 6))
-
-    # Contact Information (Email, Phone, LinkedIn, GitHub)
+    # Contact Info
     contact_style = ParagraphStyle(
         name="Contact",
         parent=styles["Normal"],
         alignment=TA_CENTER,
         fontSize=10,
-        spaceAfter=10,
-        textColor=colors.grey
+        spaceAfter=6,
     )
+
     contact_parts = []
     if data["email"]:
-        contact_parts.append(f"Email: {data['email']}")
+        contact_parts.append(data["email"])
     if data["phone"]:
-        contact_parts.append(f"Phone: {data['phone']}")
+        contact_parts.append(data["phone"])
     if data["linkedin"]:
-        contact_parts.append(f"<link href='{data['linkedin']}'><font color='blue'><u>LinkedIn</u></font></link>")
+        contact_parts.append(
+            f"<link href='{data['linkedin']}'><font color='blue'><u>{data['linkedin']}</u></font></link>"
+        )
     if data["github"]:
-        contact_parts.append(f"<link href='{data['github']}'><font color='blue'><u>GitHub</u></font></link>")
+        contact_parts.append(
+            f"<link href='{data['github']}'><font color='blue'><u>{data['github']}</u></font></link>"
+        )
 
     if contact_parts:
         contact_info = " | ".join(contact_parts)
         story.append(Paragraph(contact_info, contact_style))
 
-    # Horizontal line separator
     story.append(Spacer(1, 12))
     story.append(
         HRFlowable(
-            width="100%",
-            thickness=0.5,
-            color=colors.grey,
-            spaceBefore=0,
-            spaceAfter=6,
+            width="100%", thickness=0.5, color=colors.grey, spaceBefore=0, spaceAfter=6
         )
     )
 
-    # Sections for Education, Experience, and Additional Information
+    normal_style = ParagraphStyle(
+        name="Normal", parent=styles["Normal"], fontSize=11, spaceAfter=4
+    )
+    bold_style = ParagraphStyle(
+        name="Normal", parent=styles["Normal"], fontSize=12, spaceAfter=4
+    )
+
+    # Sections
     sections = [
         ("SUMMARY", "summary"),
         ("EDUCATION", "education"),
@@ -293,16 +289,28 @@ if current_step == 0:
                 st.success("Basic information saved successfully!")
 
 elif current_step == 1:
+    # Display existing education entries
+    for i, edu in enumerate(st.session_state.data["education"]):
+        st.write(f"Entry {i+1}: {edu['school']} - {edu['course']}")
+
+    # Form for adding new education entry
     with st.form("education_form"):
         st.subheader("Education")
-        school = st.text_input("School Name")
-        start_date = st.date_input(
-            "Start Date", min_value=datetime.date(1900, 1, 1), max_value=datetime.date.today()
-        )
-        course = st.text_input("Course Name")
-        end_date = st.date_input(
-            "End Date", min_value=datetime.date(1900, 1, 1), max_value=datetime.date(2100, 1, 1)
-        )
+        col1, col2 = st.columns(2)
+        with col1:
+            school = st.text_input("School Name")
+            start_date = st.date_input(
+                "Start Date",
+                min_value=datetime.date(1900, 1, 1),
+                max_value=datetime.date.today(),
+            )
+        with col2:
+            course = st.text_input("Course Name")
+            end_date = st.date_input(
+                "End Date",
+                min_value=datetime.date(1900, 1, 1),
+                max_value=datetime.date(2100, 1, 1),
+            )
         grade = st.text_input("Grade (%)")
         submit = st.form_submit_button("Add Education Entry")
 
@@ -339,18 +347,28 @@ elif current_step == 1:
                 st.success("Education entry added successfully!")
 
 elif current_step == 2:
+    # Display existing education entries
+    for i, exp in enumerate(st.session_state.data["experience"]):
+        st.write(f"Entry {i+1}: {exp['company']} - {exp['role']}")
+
     with st.form("experience_form"):
         st.subheader("Work Experience")
-        company = st.text_input("Company Name")
-        start_date_c = st.date_input(
-            "Start Date", min_value=datetime.date(1900, 1, 1), max_value=datetime.date.today()
-        )
-        role = st.text_input("Role")
-        end_date_c = st.date_input(
-            "End Date", min_value=datetime.date(1900, 1, 1), max_value=datetime.date(2100, 1, 1)
-        )
-        experience_summary = st.text_area("Experience Summary (Use - to list points)")
-
+        col1, col2 = st.columns(2)
+        with col1:
+            company = st.text_input("Company Name")
+            start_date_c = st.date_input(
+                "Start Date",
+                min_value=datetime.date(1900, 1, 1),
+                max_value=datetime.date.today(),
+            )
+        with col2:
+            role = st.text_input("Role")
+            end_date_c = st.date_input(
+                "End Date",
+                min_value=datetime.date(1900, 1, 1),
+                max_value=datetime.date(2100, 1, 1),
+            )
+        experience_summary = st.text_area("Experience")
         submit = st.form_submit_button("Add Experience Entry")
 
         if submit:
@@ -361,7 +379,7 @@ elif current_step == 2:
                 error = True
 
             if not role:
-                st.error("Please enter your role.")
+                st.error("Please enter the role name.")
                 error = True
 
             if start_date_c >= end_date_c:
@@ -369,7 +387,7 @@ elif current_step == 2:
                 error = True
 
             if not experience_summary:
-                st.error("Please enter the summary of your work experience.")
+                st.error("Please add a summary (5 points)")
                 error = True
 
             if not error:
@@ -383,36 +401,31 @@ elif current_step == 2:
                 st.success("Experience entry added successfully!")
 
 elif current_step == 3:
-    with st.form("skills_form"):
-        st.subheader("Skills & Additional Information")
-        skills = st.text_area("Skills (e.g., Python, JavaScript, Data Science, etc.)")
-        languages = st.text_input("Languages (e.g., English, Spanish)")
-        certifications = st.text_input("Certifications (e.g., AWS Certified)")
-        hobbies = st.text_area("Hobbies & Interests")
-
-        submit = st.form_submit_button("Save & Continue")
+    with st.form("additional_info_form"):
+        st.subheader("Additional Information")
+        st.write("Add any additional information separated by commas.")
+        skills = st.text_area("Skills", st.session_state.data["skills"])
+        languages = st.text_area("Languages", st.session_state.data["languages"])
+        certifications = st.text_area(
+            "Certifications", st.session_state.data["certifications"]
+        )
+        hobbies = st.text_area("Hobbies", st.session_state.data["hobbies"])
+        submit = st.form_submit_button("Save Additional Information")
 
         if submit:
-            st.session_state.data.update(
-                {
-                    "skills": skills,
-                    "languages": languages,
-                    "certifications": certifications,
-                    "hobbies": hobbies,
-                }
-            )
+            st.session_state.data["skills"] = skills
+            st.session_state.data["languages"] = languages
+            st.session_state.data["certifications"] = certifications
+            st.session_state.data["hobbies"] = hobbies
             st.success("Additional information saved successfully!")
 
 elif current_step == 4:
-    with st.form("generate_pdf_form"):
-        st.subheader("Generate Resume PDF")
-        submit = st.form_submit_button("Generate PDF")
-
-        if submit:
-            pdf_buffer = generate_pdf(st.session_state.data)
-            st.download_button(
-                label="Download Resume",
-                data=pdf_buffer,
-                file_name="professional_resume.pdf",
-                mime="application/pdf",
-            )
+    st.subheader("Generate PDF")
+    if st.button("Generate Resume PDF"):
+        pdf = generate_pdf(st.session_state.data)
+        st.download_button(
+            label="Download Resume PDF",
+            data=pdf,
+            file_name=f"{st.session_state.data['name']} - Resume.pdf",
+            mime="application/pdf",
+        )
