@@ -5,7 +5,6 @@ from reportlab.platypus import (
     Paragraph,
     Spacer,
     HRFlowable,
-    Image,
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
@@ -33,7 +32,7 @@ def generate_pdf(data):
     styles = getSampleStyleSheet()
     story = []
 
-    # Title with professional font and formatting
+    # Title
     if data["name"]:
         title_style = ParagraphStyle(
             name="Title",
@@ -41,19 +40,11 @@ def generate_pdf(data):
             alignment=TA_CENTER,
             fontSize=24,
             spaceAfter=6,
-            fontName="Helvetica-Bold",
         )
         story.append(Paragraph(f"{data['name']}".upper(), title_style))
 
     story.append(Spacer(1, 6))
-    
-    # Profile picture (if provided)
-    if data["profile_picture"]:
-        profile_pic = Image(data["profile_picture"], width=1.5 * inch, height=1.5 * inch)
-        profile_pic.hAlign = 'RIGHT'
-        story.append(profile_pic)
-    
-    # Contact Info with emojis
+    # Contact Info
     contact_style = ParagraphStyle(
         name="Contact",
         parent=styles["Normal"],
@@ -64,16 +55,16 @@ def generate_pdf(data):
 
     contact_parts = []
     if data["email"]:
-        contact_parts.append(f"📧 {data['email']}")
+        contact_parts.append(data["email"])
     if data["phone"]:
-        contact_parts.append(f"📱 {data['phone']}")
+        contact_parts.append(data["phone"])
     if data["linkedin"]:
         contact_parts.append(
-            f"<link href='{data['linkedin']}'><font color='blue'><u>🔗 LinkedIn</u></font></link>"
+            f"<link href='{data['linkedin']}'><font color='blue'><u>{data['linkedin']}</u></font></link>"
         )
     if data["github"]:
         contact_parts.append(
-            f"<link href='{data['github']}'><font color='blue'><u>💻 GitHub</u></font></link>"
+            f"<link href='{data['github']}'><font color='blue'><u>{data['github']}</u></font></link>"
         )
 
     if contact_parts:
@@ -96,10 +87,10 @@ def generate_pdf(data):
 
     # Sections
     sections = [
-        ("SUMMARY 📝", "summary"),
-        ("EDUCATION 🎓", "education"),
-        ("EXPERIENCE 💼", "experience"),
-        ("ADDITIONAL INFORMATION 🛠️", "additional_information"),
+        ("SUMMARY", "summary"),
+        ("EDUCATION", "education"),
+        ("EXPERIENCE", "experience"),
+        ("ADDITIONAL INFORMATION", "additional_information"),
     ]
 
     for section_title, section_key in sections:
@@ -225,7 +216,6 @@ if "data" not in st.session_state:
         "languages": "",
         "certifications": "",
         "hobbies": "",
-        "profile_picture": None,  # New field for profile picture
     }
 
 current_step = sac.steps(
@@ -257,7 +247,6 @@ if current_step == 0:
         with col5:
             github = st.text_input("GitHub Link", st.session_state.data["github"])
 
-        profile_picture = st.file_uploader("Upload Profile Picture", type=["jpg", "png", "jpeg"])
         summary = st.text_area("Summary", st.session_state.data["summary"])
         submit = st.form_submit_button("Save & Continue")
 
@@ -294,23 +283,141 @@ if current_step == 0:
                         "phone": phone,
                         "linkedin": linkedin,
                         "github": github,
-                        "profile_picture": profile_picture,
                         "summary": summary,
                     }
                 )
                 st.success("Basic information saved successfully!")
 
 elif current_step == 1:
-    # Education form remains unchanged
-    ...
+    # Display existing education entries
+    for i, edu in enumerate(st.session_state.data["education"]):
+        st.write(f"Entry {i+1}: {edu['school']} - {edu['course']}")
+
+    # Form for adding new education entry
+    with st.form("education_form"):
+        st.subheader("Education")
+        col1, col2 = st.columns(2)
+        with col1:
+            school = st.text_input("School Name")
+            start_date = st.date_input(
+                "Start Date",
+                min_value=datetime.date(1900, 1, 1),
+                max_value=datetime.date.today(),
+            )
+        with col2:
+            course = st.text_input("Course Name")
+            end_date = st.date_input(
+                "End Date",
+                min_value=datetime.date(1900, 1, 1),
+                max_value=datetime.date(2100, 1, 1),
+            )
+        grade = st.text_input("Grade (%)")
+        submit = st.form_submit_button("Add Education Entry")
+
+        if submit:
+            error = False
+
+            if not school:
+                st.error("Please enter the school name.")
+                error = True
+
+            if not course:
+                st.error("Please enter the course name.")
+                error = True
+
+            if start_date >= end_date:
+                st.error("End date must be after start date.")
+                error = True
+
+            if not grade:
+                st.error("Please enter a grade.")
+                error = True
+            elif not is_valid_grade(grade):
+                st.error("Please enter a valid grade (integer or decimal number).")
+                error = True
+
+            if not error:
+                new_edu = {
+                    "school": school,
+                    "course": course,
+                    "timeline": (start_date, end_date),
+                    "grade": grade,
+                }
+                st.session_state.data["education"].append(new_edu)
+                st.success("Education entry added successfully!")
 
 elif current_step == 2:
-    # Experience form remains unchanged
-    ...
+    # Display existing education entries
+    for i, exp in enumerate(st.session_state.data["experience"]):
+        st.write(f"Entry {i+1}: {exp['company']} - {exp['role']}")
+
+    with st.form("experience_form"):
+        st.subheader("Work Experience")
+        col1, col2 = st.columns(2)
+        with col1:
+            company = st.text_input("Company Name")
+            start_date_c = st.date_input(
+                "Start Date",
+                min_value=datetime.date(1900, 1, 1),
+                max_value=datetime.date.today(),
+            )
+        with col2:
+            role = st.text_input("Role")
+            end_date_c = st.date_input(
+                "End Date",
+                min_value=datetime.date(1900, 1, 1),
+                max_value=datetime.date(2100, 1, 1),
+            )
+        experience_summary = st.text_area("Experience")
+        submit = st.form_submit_button("Add Experience Entry")
+
+        if submit:
+            error = False
+
+            if not company:
+                st.error("Please enter the company name.")
+                error = True
+
+            if not role:
+                st.error("Please enter the role name.")
+                error = True
+
+            if start_date_c >= end_date_c:
+                st.error("End date must be after start date.")
+                error = True
+
+            if not experience_summary:
+                st.error("Please add a summary (5 points)")
+                error = True
+
+            if not error:
+                new_exp = {
+                    "company": company,
+                    "role": role,
+                    "timeline": (start_date_c, end_date_c),
+                    "experience_summary": experience_summary,
+                }
+                st.session_state.data["experience"].append(new_exp)
+                st.success("Experience entry added successfully!")
 
 elif current_step == 3:
-    # Skills form remains unchanged
-    ...
+    with st.form("additional_info_form"):
+        st.subheader("Additional Information")
+        st.write("Add any additional information separated by commas.")
+        skills = st.text_area("Skills", st.session_state.data["skills"])
+        languages = st.text_area("Languages", st.session_state.data["languages"])
+        certifications = st.text_area(
+            "Certifications", st.session_state.data["certifications"]
+        )
+        hobbies = st.text_area("Hobbies", st.session_state.data["hobbies"])
+        submit = st.form_submit_button("Save Additional Information")
+
+        if submit:
+            st.session_state.data["skills"] = skills
+            st.session_state.data["languages"] = languages
+            st.session_state.data["certifications"] = certifications
+            st.session_state.data["hobbies"] = hobbies
+            st.success("Additional information saved successfully!")
 
 elif current_step == 4:
     st.subheader("Generate PDF")
