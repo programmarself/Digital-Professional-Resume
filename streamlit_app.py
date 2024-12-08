@@ -3,12 +3,40 @@ import streamlit as st
 # Set the page title
 st.set_page_config(page_title='Resume', page_icon=':memo:')
 
+# Custom CSS for styling
+st.markdown("""
+    <style>
+        .header {
+            background-color: #007ACC;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .section-title {
+            color: #007ACC;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .contact {
+            background-color: #f0f8ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .experience, .education, .skills, .languages {
+            background-color: #e0f7fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Header section
-st.title("John Smith")
-st.subheader("Your Profession Here")
+st.markdown('<div class="header"><h1>John Smith</h1><h3>Your Profession Here</h3></div>', unsafe_allow_html=True)
 
 # Contact information
-st.markdown("### Contact")
+st.markdown('<div class="contact"><h4>Contact</h4></div>', unsafe_allow_html=True)
 st.markdown("""
 - **Email:** johnsmith@example.com
 - **Phone:** +123 456 7890
@@ -17,11 +45,11 @@ st.markdown("""
 """)
 
 # About Me section
-st.markdown("### About Me")
+st.markdown('<div class="section-title">About Me</div>', unsafe_allow_html=True)
 st.write("A brief description about yourself.")
 
 # Experience section
-st.markdown("### Experience")
+st.markdown('<div class="experience"><h4>Experience</h4></div>', unsafe_allow_html=True)
 st.markdown("""
 **Company Name**  
 *Your Position*  
@@ -39,7 +67,7 @@ st.markdown("""
 """)
 
 # Education section
-st.markdown("### Education")
+st.markdown('<div class="education"><h4>Education</h4></div>', unsafe_allow_html=True)
 st.markdown("""
 **Education Name**  
 *Degree*  
@@ -51,7 +79,7 @@ st.markdown("""
 """)
 
 # Skills section
-st.markdown("### Skills")
+st.markdown('<div class="skills"><h4>Skills</h4></div>', unsafe_allow_html=True)
 st.markdown("""
 - Web Development
 - UI Design
@@ -60,7 +88,7 @@ st.markdown("""
 """)
 
 # Languages section
-st.markdown("### Languages")
+st.markdown('<div class="languages"><h4>Languages</h4></div>', unsafe_allow_html=True)
 st.markdown("""
 - English
 - Spanish
