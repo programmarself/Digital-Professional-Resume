@@ -49,6 +49,17 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     for line in bio.split('\n'):
         text.textLine(line)
     c.drawText(text)
+
+    # Skills Section with an emoji
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColor(colors.darkblue)
+    c.drawString(30, height - 250, "💼 Skills:")
+    c.setFont("Helvetica", 12)
+    c.setFillColor(colors.black)
+    skill_list = skills.split(", ")
+    for i, skill in enumerate(skill_list):
+        c.drawString(30, height - 270 - i * 20, f"- {skill}")
+
     # Education Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
@@ -60,18 +71,6 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     for line in education.split('\n'):
         text.textLine(line)
     c.drawText(text)
-    
-    # Skills Section with an emoji
-    c.setFont("Helvetica-Bold", 14)
-    c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 250, "💼 Skills:")
-    c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    skill_list = skills.split(", ")
-    for i, skill in enumerate(skill_list):
-        c.drawString(30, height - 270 - i * 20, f"- {skill}")
-
-    
 
     # Work Experience Section with an emoji
     c.setFont("Helvetica-Bold", 14)
@@ -162,8 +161,8 @@ def main():
     email = st.text_input("Email Address")
     phone = st.text_input("Phone Number")
     bio = st.text_area("Biography")
-    education = st.text_area("Education (each entry on a new line)")
     skills = st.text_input("Skills (comma-separated)")
+    education = st.text_area("Education (each entry on a new line)")
     work_experience = st.text_area("Work Experience (each entry on a new line)")
     projects = st.text_area("Projects (each entry on a new line)")
     certifications = st.text_area("Certifications (each entry on a new line)")
@@ -182,7 +181,7 @@ def main():
                 image_path = None
 
             # Generate PDF
-            pdf_buffer = generate_pdf(name, email, phone, bio , education, skills,  work_experience, projects, certifications, image_path)
+            pdf_buffer = generate_pdf(name, email, phone, bio , education , skills,  work_experience, projects, certifications, image_path)
 
             # Provide download link
             st.download_button(
