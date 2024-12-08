@@ -6,151 +6,146 @@ import io
 from reportlab.lib import colors
 
 # Function to generate a more professional and creative PDF with emojis and better design
-def generate_pdf(name, email, phone, bio, skills, education, work_experience, projects, certifications, image_path):
+def generate_pdf(name, job_title, phone, email, linked_in, github, portfolio, achievements, education, skills, project_title, project_details, work_experience, volunteer, hackathons, articles, references, image_path):
     # Create a PDF in memory
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
 
-    # Define initial Y position for text to start (based on the title size)
-    y_position = height - 50
-
     # Title of the Resume with emoji
     c.setFont("Helvetica-Bold", 24)
-    c.setFillColor(colors.black)
-    c.drawString(30, y_position, f"{name}'s Resume 🎉")
-    y_position -= 40  # Move down after title
+    c.setFillColor(colors.darkblue)
+    c.drawString(30, height - 50, f"{name}'s Resume 🎉")
+    y_position = height - 100  # Initial position
 
     # Profile Picture on the top-right
-    img_height = 60  # Set height for profile picture
-    img_width = 60   # Set width for profile picture
+    img_height = 120  # Set height for profile picture
+    img_width = 120   # Set width for profile picture
 
     if image_path:
         img = Image.open(image_path)
         img = img.resize((img_width, img_height))  # Ensure the image fits the size
         img.save("temp_img.png")
         # Position the image on the top-right corner
-        c.setStrokeColor(colors.white)
+        c.setStrokeColor(colors.gray)
         c.setLineWidth(1)
-        #c.circle(width - 60, height - 60, 60)  # Draw a circle around the image
+        c.circle(width - 120, height - 120, 60)  # Draw a circle around the image
         c.drawImage("temp_img.png", width - 140, height - 160, width=img_width, height=img_height)
         y_position -= 140  # Move down after profile picture to avoid overlap
     else:
         y_position -= 40  # If no image, move down without affecting text flow
 
-    # Contact Info (name, email, phone) below the profile picture
+    # Contact Info
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     c.drawString(30, y_position, f"📧 Email: {email}")
     y_position -= 20
     c.drawString(30, y_position, f"📱 Phone: {phone}")
+    y_position -= 20
+    c.drawString(30, y_position, f"🔗 LinkedIn: {linked_in}")
+    y_position -= 20
+    c.drawString(30, y_position, f"🐱 GitHub: {github}")
+    y_position -= 20
+    c.drawString(30, y_position, f"🌐 Portfolio: {portfolio}")
     y_position -= 40  # Add space after contact info
 
-    # Draw a line after contact info
-    c.setStrokeColor(colors.darkblue)
-    c.setLineWidth(1)
-    c.line(30, y_position, width - 30, y_position)
-    y_position -= 20  # Move down after line
-
-    # Biography Section with an emoji
+    # Achievements Section
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, y_position, "👤 Biography:")
+    c.drawString(30, y_position, "🏆 Achievements:")
     y_position -= 20
     c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    text = c.beginText(30, y_position)
-    text.setFont("Helvetica", 12)
-    for line in bio.split('\n'):
-        text.textLine(line)
-        y_position -= 14  # Adjust line height dynamically
-    c.drawText(text)
-    y_position -= 20  # Add space after biography section
+    for line in achievements.split('\n'):
+        c.drawString(30, y_position, f"- {line}")
+        y_position -= 20
+    y_position -= 20  # Add space after achievements section
 
-    # Skills Section with an emoji
-    c.setFont("Helvetica-Bold", 14)
-    c.setFillColor(colors.darkblue)
-    c.drawString(30, y_position, "💼 Skills:")
-    y_position -= 20
-    c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    skill_list = skills.split(", ")
-    for i, skill in enumerate(skill_list):
-        c.drawString(30, y_position, f"- {skill}")
-        y_position -= 20  # Move down after each skill
-    y_position -= 20  # Add space after skills section
-
-    # Education Section with an emoji
+    # Education Section
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
     c.drawString(30, y_position, "🎓 Education:")
     y_position -= 20
     c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    text = c.beginText(30, y_position)
-    text.setFont("Helvetica", 12)
     for line in education.split('\n'):
-        text.textLine(line)
-        y_position -= 14  # Adjust line height dynamically
-    c.drawText(text)
+        c.drawString(30, y_position, f"- {line}")
+        y_position -= 20
     y_position -= 20  # Add space after education section
 
-    # Work Experience Section with an emoji
+    # Skills Section
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColor(colors.darkblue)
+    c.drawString(30, y_position, "💼 Skills:")
+    y_position -= 20
+    c.setFont("Helvetica", 12)
+    for line in skills.split(','):
+        c.drawString(30, y_position, f"- {line.strip()}")
+        y_position -= 20
+    y_position -= 20  # Add space after skills section
+
+    # Final Year Project Section
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColor(colors.darkblue)
+    c.drawString(30, y_position, "🖥 Final Year Project:")
+    y_position -= 20
+    c.setFont("Helvetica", 12)
+    c.drawString(30, y_position, f"Title: {project_title}")
+    y_position -= 20
+    c.drawString(30, y_position, f"Details: {project_details}")
+    y_position -= 40  # Add space after project section
+
+    # Work Experience Section
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
     c.drawString(30, y_position, "💼 Work Experience:")
     y_position -= 20
     c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    text = c.beginText(30, y_position)
-    text.setFont("Helvetica", 12)
     for line in work_experience.split('\n'):
-        text.textLine(line)
-        y_position -= 14  # Adjust line height dynamically
-    c.drawText(text)
+        c.drawString(30, y_position, f"- {line}")
+        y_position -= 20
     y_position -= 20  # Add space after work experience section
 
-    # Projects Section with an emoji
+    # Volunteer Section
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, y_position, "📂 Projects:")
+    c.drawString(30, y_position, "🤝 Volunteer Activities:")
     y_position -= 20
     c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    text = c.beginText(30, y_position)
-    text.setFont("Helvetica", 12)
-    for line in projects.split('\n'):
-        text.textLine(line)
-        y_position -= 14  # Adjust line height dynamically
-    c.drawText(text)
-    y_position -= 20  # Add space after projects section
+    for line in volunteer.split('\n'):
+        c.drawString(30, y_position, f"- {line}")
+        y_position -= 20
+    y_position -= 20  # Add space after volunteer section
 
-    # Certifications Section with an emoji
+    # Hackathons Section
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, y_position, "🏅 Certifications:")
+    c.drawString(30, y_position, "🏆 International Hackathons:")
     y_position -= 20
     c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    text = c.beginText(30, y_position)
-    text.setFont("Helvetica", 12)
-    for line in certifications.split('\n'):
-        text.textLine(line)
-        y_position -= 14  # Adjust line height dynamically
-    c.drawText(text)
-    y_position -= 20  # Add space after certifications section
+    for line in hackathons.split('\n'):
+        c.drawString(30, y_position, f"- {line}")
+        y_position -= 20
+    y_position -= 20  # Add space after hackathons section
 
-    # Draw a line before the footer
-    c.setStrokeColor(colors.darkblue)
-    c.setLineWidth(1)
-    c.line(30, y_position, width - 30, y_position)
-    y_position -= 20  # Move down after line
-
-    # Footer (Social Media, LinkedIn, etc.)
-    c.setFont("Helvetica-Oblique", 10)
+    # Articles Section
+    c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, y_position, f"🔗 LinkedIn: www.linkedin.com/in/{name.lower().replace(' ', '')}")
-    c.drawString(width - 250, y_position, f"🐱 GitHub: github.com/{name.lower().replace(' ', '')}")
+    c.drawString(30, y_position, "📝 Articles Written:")
+    y_position -= 20
+    c.setFont("Helvetica", 12)
+    for line in articles.split('\n'):
+        c.drawString(30, y_position, f"- {line}")
+        y_position -= 20
+    y_position -= 20  # Add space after articles section
+
+    # References Section
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColor(colors.darkblue)
+    c.drawString(30, y_position, "📑 References:")
+    y_position -= 20
+    c.setFont("Helvetica", 12)
+    for line in references.split('\n'):
+        c.drawString(30, y_position, f"- {line}")
+        y_position -= 20
 
     # Save the PDF
     c.showPage()
@@ -164,57 +159,37 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
 def main():
     st.title("Digital Professional Resume Builder")
 
-    # Style for the Streamlit interface
-    st.markdown("""
-    <style>
-    .stButton>button {
-        background-color: #4CAF50;
-        color: white;
-        font-size: 16px;
-        padding: 10px 24px;
-        border-radius: 12px;
-    }
-    .stTextInput>div>div>input {
-        background-color: #f0f8ff;
-        border: 1px solid #add8e6;
-    }
-    .stTextArea>div>div>textarea {
-        background-color: #f0f8ff;
-        border: 1px solid #add8e6;
-    }
-    .stFileUploader>div>div>div>input {
-        background-color: #f0f8ff;
-        border: 1px solid #add8e6;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
     # User inputs
     name = st.text_input("Full Name")
-    email = st.text_input("Email Address")
+    job_title = st.text_input("Job Title (e.g. Software Engineer, Data Scientist)")
     phone = st.text_input("Phone Number")
-    bio = st.text_area("Biography")
-    skills = st.text_input("Skills (comma-separated)")
+    email = st.text_input("Email Address")
+    linked_in = st.text_input("LinkedIn URL")
+    github = st.text_input("GitHub URL")
+    portfolio = st.text_input("Portfolio URL")
+    
+    achievements = st.text_area("Achievements (each entry on a new line)")
     education = st.text_area("Education (each entry on a new line)")
+    skills = st.text_input("Skills (comma-separated)")
+    project_title = st.text_input("Project Title")
+    project_details = st.text_area("Project Details")
     work_experience = st.text_area("Work Experience (each entry on a new line)")
-    projects = st.text_area("Projects (each entry on a new line)")
-    certifications = st.text_area("Certifications (each entry on a new line)")
-
-    # Profile picture upload
+    volunteer = st.text_area("Volunteer Activities (each entry on a new line)")
+    hackathons = st.text_area("Hackathons (each entry on a new line)")
+    articles = st.text_area("Articles Written (each entry on a new line)")
+    references = st.text_area("References (each entry on a new line)")
+    
     image = st.file_uploader("Upload Profile Picture", type=["jpg", "jpeg", "png"])
 
-    # Styling for button
+    # Generate Resume button
     if st.button("Generate Resume"):
-        if not name or not email or not phone or not bio or not skills or not education or not work_experience or not projects or not certifications:
+        if not name or not email or not phone or not achievements or not education or not skills:
             st.error("Please fill in all fields.")
         else:
-            if image:
-                image_path = image
-            else:
-                image_path = None
+            image_path = image if image else None
 
             # Generate PDF
-            pdf_buffer = generate_pdf(name, email, phone, bio, skills, education, work_experience, projects, certifications, image_path)
+            pdf_buffer = generate_pdf(name, job_title, phone, email, linked_in, github, portfolio, achievements, education, skills, project_title, project_details, work_experience, volunteer, hackathons, articles, references, image_path)
 
             # Provide download link
             st.download_button(
