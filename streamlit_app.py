@@ -29,20 +29,21 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
         img = Image.open(image_path)
         img = img.resize((img_width, img_height))  # Ensure the image fits the size
         img.save("temp_img.png")
+        # Position the image and create a circular frame
         c.setStrokeColor(colors.gray)
         c.setLineWidth(1)
-        c.circle(width - 150, y_position - 60, 60)  # Draw a circle around the image
-        c.drawImage("temp_img.png", width - 180, y_position - 80, width=img_width, height=img_height)
+        c.circle(80, y_position - 60, 60)  # Draw a circle around the image
+        c.drawImage("temp_img.png", 20, y_position - 80, width=img_width, height=img_height)
         y_position -= 140  # Move down after profile picture to avoid overlap
     else:
         y_position -= 40  # If no image, move down without affecting text flow
 
-    # Contact Info (name, email, phone)
+    # Contact Info (name, email, phone) next to the image
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    c.drawString(30, y_position, f"📧 Email: {email}")
+    c.drawString(160, y_position, f"📧 Email: {email}")
     y_position -= 20
-    c.drawString(30, y_position, f"📱 Phone: {phone}")
+    c.drawString(160, y_position, f"📱 Phone: {phone}")
     y_position -= 40  # Add space after contact info
 
     # Draw a line after contact info
