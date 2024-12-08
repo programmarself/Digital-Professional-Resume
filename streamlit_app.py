@@ -21,15 +21,7 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     c.drawString(30, y_position, f"{name}'s Resume 🎉")
     y_position -= 40  # Move down after title
 
-    # Contact Info with emojis
-    c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    c.drawString(30, y_position, f"📧 Email: {email}")
-    y_position -= 20
-    c.drawString(30, y_position, f"📱 Phone: {phone}")
-    y_position -= 40  # Add space after contact info
-
-    # Profile Picture (if uploaded), with a circular border
+    # Profile Picture and Contact Info at the top
     img_height = 120  # Set height for profile picture
     img_width = 120   # Set width for profile picture
 
@@ -42,6 +34,16 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
         c.circle(width - 150, y_position - 60, 60)  # Draw a circle around the image
         c.drawImage("temp_img.png", width - 180, y_position - 80, width=img_width, height=img_height)
         y_position -= 140  # Move down after profile picture to avoid overlap
+    else:
+        y_position -= 40  # If no image, move down without affecting text flow
+
+    # Contact Info (name, email, phone)
+    c.setFont("Helvetica", 12)
+    c.setFillColor(colors.black)
+    c.drawString(30, y_position, f"📧 Email: {email}")
+    y_position -= 20
+    c.drawString(30, y_position, f"📱 Phone: {phone}")
+    y_position -= 40  # Add space after contact info
 
     # Draw a line after contact info
     c.setStrokeColor(colors.darkblue)
