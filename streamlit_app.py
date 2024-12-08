@@ -1,96 +1,66 @@
 import streamlit as st
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import io
 
-# Set the page title
-st.set_page_config(page_title='Resume', page_icon=':memo:')
+def generate_pdf(name, profession, contact_info, skills, experience):
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
 
-# Custom CSS for styling
-st.markdown("""
-    <style>
-        .header {
-            background-color: #007ACC;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-        .section-title {
-            color: #007ACC;
-            font-size: 24px;
-            margin-top: 20px;
-        }
-        .contact {
-            background-color: #f0f8ff;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .experience, .education, .skills, .languages {
-            background-color: #e0f7fa;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-    </style>
-""", unsafe_allow_html=True)
+    # Title
+    p.setFont("Helvetica-Bold", 20)
+    p.drawString(50, height - 50, name)
+    p.setFont("Helvetica", 12)
+    p.drawString(50, height - 70, profession)
 
-# Header section
-st.markdown('<div class="header"><h1>John Smith</h1><h3>Your Profession Here</h3></div>', unsafe_allow_html=True)
+    # Contact Info
+    p.drawString(50, height - 100, contact_info)
 
-# Contact information
-st.markdown('<div class="contact"><h4>Contact</h4></div>', unsafe_allow_html=True)
-st.markdown("""
-- **Email:** johnsmith@example.com
-- **Phone:** +123 456 7890
-- **LinkedIn:** [linkedin.com/in/johnsmith](https://linkedin.com/in/johnsmith)
-- **GitHub:** [github.com/johnsmith](https://github.com/johnsmith)
-""")
+    # Skills
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(50, height - 130, "Skills and Competencies")
+    p.setFont("Helvetica", 12)
+    y = height - 150
+    for skill in skills:
+        p.drawString(50, y, f"- {skill}")
+        y -= 15
 
-# About Me section
-st.markdown('<div class="section-title">About Me</div>', unsafe_allow_html=True)
-st.write("A brief description about yourself.")
+    # Experience
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(50, y, "Work Experience")
+    p.setFont("Helvetica", 12)
+    y -= 20
+    for exp in experience:
+        p.drawString(50, y, exp)
+        y -= 15
 
-# Experience section
-st.markdown('<div class="experience"><h4>Experience</h4></div>', unsafe_allow_html=True)
-st.markdown("""
-**Company Name**  
-*Your Position*  
-*Jan 2019 - Present*  
-- Responsibility 1
-- Responsibility 2
-- Responsibility 3
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return buffer
 
-**Company Name**  
-*Your Position*  
-*Jan 2018 - Dec 2018*  
-- Responsibility 1
-- Responsibility 2
-- Responsibility 3
-""")
+# Streamlit app
+st.title("Digital Professional Resume")
 
-# Education section
-st.markdown('<div class="education"><h4>Education</h4></div>', unsafe_allow_html=True)
-st.markdown("""
-**Education Name**  
-*Degree*  
-*Year*
+# User Input
+with st.form("resume_form"):
+    name = st.text_input("Full Name")
+    profession = st.text_input("Profession")
+    contact_info = st.text_area("Contact Information")
+    skills = st.text_area("Skills (comma-separated)").split(',')
+    experience = st.text_area("Work Experience (one per line)").splitlines()
+    
+    # Submit button
+    submitted = st.form_submit_button("Generate PDF")
 
-**Education Name**  
-*Degree*  
-*Year*
-""")
-
-# Skills section
-st.markdown('<div class="skills"><h4>Skills</h4></div>', unsafe_allow_html=True)
-st.markdown("""
-- Web Development
-- UI Design
-- Graphic Design
-- Animation
-""")
-
-# Languages section
-st.markdown('<div class="languages"><h4>Languages</h4></div>', unsafe_allow_html=True)
-st.markdown("""
-- English
-- Spanish
-- French
-""")
+    if submitted:
+        pdf_buffer = generate_pdf(name, profession, contact_info, skills, experience)
+        
+        # PDF download link
+        st.download_button(
+            "Download PDF",
+            pdf_buffer,
+            file_name="resume.pdf",
+            mime="application/pdf"
+        )
