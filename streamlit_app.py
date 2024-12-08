@@ -163,8 +163,9 @@ def main():
     email = st.text_input("Email Address")
     phone = st.text_input("Phone Number")
     bio = st.text_area("Biography")
-    skills = st.text_input("Skills (comma-separated)")
     education = st.text_area("Education (each entry on a new line)")
+    skills = st.text_input("Skills (comma-separated)")
+    
     work_experience = st.text_area("Work Experience (each entry on a new line)")
     projects = st.text_area("Projects (each entry on a new line)")
     certifications = st.text_area("Certifications (each entry on a new line)")
@@ -174,7 +175,7 @@ def main():
 
     # Styling for button
     if st.button("Generate Resume"):
-        if not name or not email or not phone or not bio or not skills or not education or not work_experience or not projects or not certifications:
+        if not name or not email or not phone or not bio or not education or not skills or not work_experience or not projects or not certifications:
             st.error("Please fill in all fields.")
         else:
             if image:
