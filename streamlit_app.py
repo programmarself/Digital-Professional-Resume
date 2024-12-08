@@ -5,39 +5,43 @@ from PIL import Image
 import io
 from reportlab.lib import colors
 
-# Function to generate a more professional and creative PDF
+# Function to generate a more professional and creative PDF with emojis and better design
 def generate_pdf(name, email, phone, bio, skills, education, work_experience, projects, certifications, image_path):
     # Create a PDF in memory
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
 
-    # Title of the Resume
+    # Title of the Resume with emoji
     c.setFont("Helvetica-Bold", 24)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 50, f"{name}'s Resume")
+    c.drawString(30, height - 50, f"{name}'s Resume 🎉")
 
-    # Contact Info
+    # Contact Info with emojis
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    c.drawString(30, height - 80, f"Email: {email}")
-    c.drawString(30, height - 100, f"Phone: {phone}")
+    c.drawString(30, height - 80, f"📧 Email: {email}")
+    c.drawString(30, height - 100, f"📱 Phone: {phone}")
 
-    # Profile Picture (if uploaded)
+    # Profile Picture (if uploaded), with a circular border
     if image_path:
         img = Image.open(image_path)
+        img = img.resize((120, 120))  # Ensure the image fits the size
         img.save("temp_img.png")
-        c.drawImage("temp_img.png", width - 150, height - 180, width=120, height=120)
+        c.setStrokeColor(colors.gray)
+        c.setLineWidth(1)
+        c.circle(width - 150, height - 180, 60)  # Draw a circle around the image
+        c.drawImage("temp_img.png", width - 180, height - 200, width=120, height=120)
 
     # Draw a line after contact info
     c.setStrokeColor(colors.darkblue)
     c.setLineWidth(1)
-    c.line(30, height - 110, width - 30, height - 110)
+    c.line(30, height - 120, width - 30, height - 120)
 
-    # Biography Section
+    # Biography Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 160, "Biography:")
+    c.drawString(30, height - 160, "👤 Biography:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     text = c.beginText(30, height - 180)
@@ -46,20 +50,20 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
         text.textLine(line)
     c.drawText(text)
 
-    # Skills Section
+    # Skills Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 250, "Skills:")
+    c.drawString(30, height - 250, "💼 Skills:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     skill_list = skills.split(", ")
     for i, skill in enumerate(skill_list):
         c.drawString(30, height - 270 - i * 20, f"- {skill}")
 
-    # Education Section
+    # Education Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 350, "Education:")
+    c.drawString(30, height - 350, "🎓 Education:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     text = c.beginText(30, height - 370)
@@ -68,10 +72,10 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
         text.textLine(line)
     c.drawText(text)
 
-    # Work Experience Section
+    # Work Experience Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 450, "Work Experience:")
+    c.drawString(30, height - 450, "💼 Work Experience:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     text = c.beginText(30, height - 470)
@@ -80,10 +84,10 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
         text.textLine(line)
     c.drawText(text)
 
-    # Projects Section
+    # Projects Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 550, "Projects:")
+    c.drawString(30, height - 550, "📂 Projects:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     text = c.beginText(30, height - 570)
@@ -92,10 +96,10 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
         text.textLine(line)
     c.drawText(text)
 
-    # Certifications Section
+    # Certifications Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 650, "Certifications:")
+    c.drawString(30, height - 650, "🏅 Certifications:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     text = c.beginText(30, height - 670)
@@ -112,8 +116,8 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     # Footer (Social Media, LinkedIn, etc.)
     c.setFont("Helvetica-Oblique", 10)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, 30, f"LinkedIn: www.linkedin.com/in/{name.lower().replace(' ', '')}")
-    c.drawString(width - 200, 30, f"GitHub: github.com/{name.lower().replace(' ', '')}")
+    c.drawString(30, 30, f"🔗 LinkedIn: www.linkedin.com/in/{name.lower().replace(' ', '')}")
+    c.drawString(width - 250, 30, f"🐱 GitHub: github.com/{name.lower().replace(' ', '')}")
 
     # Save the PDF
     c.showPage()
