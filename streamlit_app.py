@@ -55,10 +55,10 @@ with st.form("resume_form"):
     submitted = st.form_submit_button("Generate PDF")
 
     if submitted:
-        if name and profession:  # Check if required fields are not empty
+        if name and profession:  # Ensure required fields are filled
             pdf_buffer = generate_pdf(name, profession, contact_info, skills, experience)
             
-            # PDF download link
+            # Use a separate button for downloading the PDF
             st.download_button(
                 label="Download PDF",
                 data=pdf_buffer,
