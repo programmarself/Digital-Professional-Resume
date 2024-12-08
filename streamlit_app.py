@@ -22,8 +22,8 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     y_position -= 40  # Move down after title
 
     # Profile Picture on the top-right
-    img_height = 120  # Set height for profile picture
-    img_width = 120   # Set width for profile picture
+    img_height = 60  # Set height for profile picture
+    img_width = 60   # Set width for profile picture
 
     if image_path:
         img = Image.open(image_path)
