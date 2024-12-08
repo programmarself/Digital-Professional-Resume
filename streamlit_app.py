@@ -6,7 +6,7 @@ import io
 from reportlab.lib import colors
 
 # Function to generate a more professional and creative PDF with emojis and better design
-def generate_pdf(name, email, phone, bio,  education , skills, work_experience, projects, certifications, image_path):
+def generate_pdf(name, email, phone, bio, skills, education, work_experience, projects, certifications, image_path):
     # Create a PDF in memory
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
@@ -49,30 +49,28 @@ def generate_pdf(name, email, phone, bio,  education , skills, work_experience, 
     for line in bio.split('\n'):
         text.textLine(line)
     c.drawText(text)
-    
-    # Education Section with an emoji
+
+    # Education Section with an emoji (Moved before Skills)
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 350, "🎓 Education:")
+    c.drawString(30, height - 250, "🎓 Education:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    text = c.beginText(30, height - 370)
+    text = c.beginText(30, height - 270)
     text.setFont("Helvetica", 12)
     for line in education.split('\n'):
         text.textLine(line)
     c.drawText(text)
-    
-    # Skills Section with an emoji
+
+    # Skills Section with an emoji (After Education)
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 250, "💼 Skills:")
+    c.drawString(30, height - 350, "💼 Skills:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     skill_list = skills.split(", ")
     for i, skill in enumerate(skill_list):
-        c.drawString(30, height - 270 - i * 20, f"- {skill}")
-
-  
+        c.drawString(30, height - 370 - i * 20, f"- {skill}")
 
     # Work Experience Section with an emoji
     c.setFont("Helvetica-Bold", 14)
@@ -163,9 +161,8 @@ def main():
     email = st.text_input("Email Address")
     phone = st.text_input("Phone Number")
     bio = st.text_area("Biography")
-    education = st.text_area("Education (each entry on a new line)")
-    skills = st.text_input("Skills (comma-separated)")
-    
+    education = st.text_area("Education (each entry on a new line)")  # Moved Education before Skills
+    skills = st.text_input("Skills (comma-separated)")  # Moved Skills after Education
     work_experience = st.text_area("Work Experience (each entry on a new line)")
     projects = st.text_area("Projects (each entry on a new line)")
     certifications = st.text_area("Certifications (each entry on a new line)")
@@ -175,7 +172,7 @@ def main():
 
     # Styling for button
     if st.button("Generate Resume"):
-        if not name or not email or not phone or not bio or not education or not skills or not work_experience or not projects or not certifications:
+        if not name or not email or not phone or not bio or not skills or not education or not work_experience or not projects or not certifications:
             st.error("Please fill in all fields.")
         else:
             if image:
@@ -184,7 +181,7 @@ def main():
                 image_path = None
 
             # Generate PDF
-            pdf_buffer = generate_pdf(name, email, phone, bio , education , skills,  work_experience, projects, certifications, image_path)
+            pdf_buffer = generate_pdf(name, email, phone, bio, skills, education, work_experience, projects, certifications, image_path)
 
             # Provide download link
             st.download_button(
