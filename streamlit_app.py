@@ -182,7 +182,7 @@ def main():
                 image_path = None
 
             # Generate PDF
-            pdf_buffer = generate_pdf(name, email, phone, bio,education, skills, , work_experience, projects, certifications, image_path)
+            pdf_buffer = generate_pdf(name, email, phone, bio , education, skills,  work_experience, projects, certifications, image_path)
 
             # Provide download link
             st.download_button(
