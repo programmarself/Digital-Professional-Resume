@@ -41,10 +41,10 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, pr
     # Biography Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 160, "👤 Biography:")
+    c.drawString(80, height - 160, "👤 Biography:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
-    text = c.beginText(80, height - 180)
+    text = c.beginText(30, height - 180)
     text.setFont("Helvetica", 12)
     for line in bio.split('\n'):
         text.textLine(line)
