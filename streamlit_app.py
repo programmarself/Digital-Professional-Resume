@@ -6,7 +6,7 @@ import io
 from reportlab.lib import colors
 
 # Function to generate a more professional and creative PDF with emojis and better design
-def generate_pdf(name, email, phone, bio, skills, education, work_experience, certifications, image_path):
+def generate_pdf(name, email, phone, bio, skills, education, work_experience, projects, certifications, image_path):
     # Create a PDF in memory
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
@@ -84,13 +84,25 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, ce
         text.textLine(line)
     c.drawText(text)
 
-    # Certifications Section with an emoji
+    # Projects Section with an emoji
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor(colors.darkblue)
-    c.drawString(30, height - 550, "🏅 Certifications:")
+    c.drawString(30, height - 550, "📂 Projects:")
     c.setFont("Helvetica", 12)
     c.setFillColor(colors.black)
     text = c.beginText(30, height - 570)
+    text.setFont("Helvetica", 12)
+    for line in projects.split('\n'):
+        text.textLine(line)
+    c.drawText(text)
+
+    # Certifications Section with an emoji
+    c.setFont("Helvetica-Bold", 14)
+    c.setFillColor(colors.darkblue)
+    c.drawString(30, height - 650, "🏅 Certifications:")
+    c.setFont("Helvetica", 12)
+    c.setFillColor(colors.black)
+    text = c.beginText(30, height - 670)
     text.setFont("Helvetica", 12)
     for line in certifications.split('\n'):
         text.textLine(line)
@@ -99,7 +111,7 @@ def generate_pdf(name, email, phone, bio, skills, education, work_experience, ce
     # Draw a line before the footer
     c.setStrokeColor(colors.darkblue)
     c.setLineWidth(1)
-    c.line(30, height - 590, width - 30, height - 590)
+    c.line(30, height - 690, width - 30, height - 690)
 
     # Footer (Social Media, LinkedIn, etc.)
     c.setFont("Helvetica-Oblique", 10)
@@ -152,6 +164,7 @@ def main():
     skills = st.text_input("Skills (comma-separated)")
     education = st.text_area("Education (each entry on a new line)")
     work_experience = st.text_area("Work Experience (each entry on a new line)")
+    projects = st.text_area("Projects (each entry on a new line)")
     certifications = st.text_area("Certifications (each entry on a new line)")
 
     # Profile picture upload
@@ -159,7 +172,7 @@ def main():
 
     # Styling for button
     if st.button("Generate Resume"):
-        if not name or not email or not phone or not bio or not skills or not education or not work_experience or not certifications:
+        if not name or not email or not phone or not bio or not skills or not education or not work_experience or not projects or not certifications:
             st.error("Please fill in all fields.")
         else:
             if image:
@@ -168,7 +181,7 @@ def main():
                 image_path = None
 
             # Generate PDF
-            pdf_buffer = generate_pdf(name, email, phone, bio, skills, education, work_experience, certifications, image_path)
+            pdf_buffer = generate_pdf(name, email, phone, bio, skills, education, work_experience, projects, certifications, image_path)
 
             # Provide download link
             st.download_button(
